@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -z "$4" ]
+then 
+	echo "./driver EXECUTABLE INPUT_FILE FROM_PROXY TO_PROXY"
+	exit 1
+fi
+EXECUTABLE="$1"
+INPUT_FILE="$2"
+FROM_PROXY="$3"
+TO_PROXY="$4"
+
+
+$1 < $2
+RETURN_CODE=$?
+cat < $FROM_PROXY
+#$TO_PROXY < echo $RETURN_CODE

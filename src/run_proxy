@@ -1,0 +1,10 @@
+#!/bin/bash
+
+rm ./proxy
+clang ./proxy.c -o ./proxy
+
+tmpdir="./temp_dir"
+to_target="$tmpdir/p2target"
+from_target="$tmpdir/target2p"
+
+./proxy $to_target $from_target
