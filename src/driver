@@ -2,7 +2,7 @@
 
 if [ -z "$4" ]
 then 
-	echo "./driver EXECUTABLE INPUT_FILE FROM_PROXY TO_PROXY"
+	echo "USAGE: ./driver EXECUTABLE INPUT_FILE FROM_PROXY TO_PROXY"
 	exit 1
 fi
 EXECUTABLE="$1"
@@ -10,8 +10,18 @@ INPUT_FILE="$2"
 FROM_PROXY="$3"
 TO_PROXY="$4"
 
+# wait a start signal
+read -n 4 < $FROM_PROXY
 
+# run EXECUTABLE with INPUT
 $1 < $2
 RETURN_CODE=$?
-cat < $FROM_PROXY
-#$TO_PROXY < echo $RETURN_CODE
+#echo "$RETURN_CODE"
+
+# send a return code
+RETURN_CODE_HEX=`python3 -c """
+import struct
+print(str(struct.pack('<i', $RETURN_CODE))[2:-1])
+"""`
+echo -e "$RETURN_CODE_HEX" > $TO_PROXY
+#echo -e "$RETURN_CODE_HEX"

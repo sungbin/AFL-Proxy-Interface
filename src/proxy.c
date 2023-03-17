@@ -25,21 +25,20 @@ main (int argc, char *argv[]) {
     char *to_target_str = argv[1];
     char *from_target_str = argv[2];
 
-    fprintf(stderr, "open %s \n", to_target_str);
+    //fprintf(stderr, "open %s \n", to_target_str);
     to_target_fd = fopen(to_target_str, "w+");
 
-    //fprintf(stderr, "open %s \n", from_target_str);
-    //from_target_fd = fopen(from_target_str, "r+");
+    fprintf(stderr, "open %s \n", from_target_str);
+    from_target_fd = fopen(from_target_str, "r+");
 
-    fprintf(stderr, "H2 \n");
     // test
     int return_code;
     to_target("HELO", 4);
-    //from_target((char*)&return_code, 4);
+    from_target((char*)&return_code, 4);
     printf("return code: %d \n", return_code);
     
     fclose(to_target_fd);
-    //fclose(from_target_fd);
+    fclose(from_target_fd);
 
     return 0;
 }
@@ -50,7 +49,6 @@ to_target(char *buf, int size) {
 
     unsigned int total_written_num = 0;
     
-    fprintf(stderr, "totla_written : %d \n", total_written_num);
     fflush(stderr);
     while (size - total_written_num > 0) {
 
@@ -66,8 +64,10 @@ to_target(char *buf, int size) {
         fflush(stderr);
     }
     assert(size == total_written_num);    
+    fflush(to_target_fd);
     //buf[size-1] = 0x0;
     //fprintf(stderr, "LOG: to target \"%s\"", buf);
+    fprintf(stderr, "totla_written : %d \n", total_written_num);
     return total_written_num;
 }
 
@@ -89,5 +89,7 @@ from_target(char *buf, int size) {
     assert(size == total_read_num);    
     //buf[size-1] = 0x0;
     //fprintf(stderr, "LOG: from target \"%s\"", buf);
+    fflush(from_target_fd);
+    fprintf(stderr, "totla_read : %d \n", total_read_num);
     return total_read_num;
 }
