@@ -4,43 +4,24 @@
 
 FILE *coverage_fp = 0x0;
 
-uint32_t *coverage_set = 0x0;
+uint32_t *coverd_edges = 0x0;
 uint32_t coverage_cnt = 0;
 uint32_t alloc_num = 2048;
 
-void print_coverage_set();
 void update_coverage(uint32_t edge);
 
-extern "C" void add_coverage_set(uint32_t edge) {
+extern "C" void add_coverd_edges(uint32_t edge) {
 
-    if (coverage_set == 0x0)
-        coverage_set = (uint32_t*)malloc(sizeof(uint32_t)*alloc_num);
+    if (coverd_edges == 0x0)
+        coverd_edges = (uint32_t*)malloc(sizeof(uint32_t)*alloc_num);
     if (coverage_cnt >= alloc_num) {
         alloc_num *= 2;
-	coverage_set = (uint32_t*)realloc(coverage_set, alloc_num);
+	coverd_edges = (uint32_t*)realloc(coverd_edges, alloc_num);
     }
 
-    int duplicated = 0;
-    for (uint32_t i = 0; i < coverage_cnt; i++) {
-        if (coverage_set[i] == edge) {
-	    duplicated = 1;
-	    break;
-        }
-    }
-    if (! duplicated) {
-        coverage_set[coverage_cnt] = edge;
-        coverage_cnt++;
-	update_coverage(edge);
-	//print_coverage_set();
-    }
-}
-
-void print_coverage_set() {
-    fprintf(stderr, "%d coverd: [", coverage_cnt);
-    for (uint32_t i = 0; i < coverage_cnt; i++) {
-        fprintf(stderr, "%d, ", coverage_set[i]);
-    }
-    fprintf(stderr, "\b\b] \n");
+    coverd_edges[coverage_cnt] = edge;
+    coverage_cnt++;
+    update_coverage(edge);
 }
 
 void update_coverage(uint32_t edge) {
